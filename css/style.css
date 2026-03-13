@@ -1,7 +1,7 @@
 :root {
     --primary: #4f46e5;
     --primary-hover: #4338ca;
-    --bg: #f3f4f6;
+    --bg: #171af1;
     --text: #1f2937;
     --white: #ffffff;
     --radius: 8px;
@@ -42,7 +42,7 @@ body {
     flex: 1;
     padding: 10px;
     border-radius: var(--radius);
-    border: 1px solid #d1d5db;
+    border: 1px solid #0b0fe9;
     font-size: 1rem;
 }
 

@@ -130,6 +130,15 @@ function createTask() {
       updateStats();
     });
 
+    deleteButton.addEventListener("click", function(){
+        const confirmar = confirm("¿Seguro que quieres eliminar esta tarea?");
+
+        if(confirmar) {
+            taskItem.remove();
+            updateStats();
+        }
+    });
+
     checkbox.addEventListener("change", function() {
       taskItem.classList.toggle("completed")
 
@@ -159,4 +168,66 @@ function createTask() {
 
     updateStats();
 }
+
+//Boton para completar todas las tareas
+//Validacion de tareas 
+function validarTarea(texto) {
+  // Elimina espacios al inicio y al final
+  let limpio = texto.trim();
+
+  if (limpio.length < 5) {
+    alert("El texto de la tarea es demasiado corto. Debe tener mínimo 5 caracteres.");
+    return false;
+  } else {
+    return true;
+  }
+}
+
+// Ejemplo de uso
+validarTarea("  Hola "); // Mostrará alerta porque "Hola" tiene solo 4 caracteres
+validarTarea("  Hola mundo "); // Pasará la validación
+
+//Alerta de eliminacion
+function eliminarTarea(id) {
+  // Preguntar al usuario si está seguro
+  let seguro = confirm("¿Estás seguro de que deseas eliminar esta tarea?");
+
+  if (seguro) {
+    // Aquí iría la lógica para eliminar la tarea
+    console.log("Tarea eliminada con ID:", id);
+  } else {
+    // Si el usuario cancela, no se elimina
+    console.log("Eliminación cancelada");
+  }
+}
+
+// Ejemplo de uso
+eliminarTarea(1);
+
+//Agregar fecha de creacion
+function crearTarea(texto) {
+  let limpio = texto.trim();
+
+  if (limpio.length < 5) {
+    alert("El texto de la tarea es demasiado corto. Debe tener mínimo 5 caracteres.");
+    return null;
+  }
+
+  // Crear objeto Date con la fecha actual
+  let fechaCreacion = new Date();
+
+  // Guardar tarea con texto y fecha
+  let tarea = {
+    texto: limpio,
+    fecha: fechaCreacion.toLocaleString() // formato legible
+  };
+
+  console.log("Tarea creada:", tarea);
+  return tarea;
+}
+
+// Ejemplo de uso
+crearTarea("Estudiar JavaScript");
+
+
 

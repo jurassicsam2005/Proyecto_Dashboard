@@ -44,5 +44,21 @@
     <!-- NUEVO EN ESTA CLASE -->
     <!-- Conexión con el archivo JavaScript -->
     <script src="js/script.js"></script>
+
+    <script>
+      function toggleCompletadas() {
+      let tareas = document.querySelectorAll(".tarea");
+      let check = document.getElementById("checkCompletadas").checked;
+
+     tareas.forEach(tarea => {
+         if (check) {
+         tarea.classList.add("completada");
+        } else {
+         tarea.classList.remove("completada");
+        }
+        });
+    }
+    </script>
+
 </body>
 </html>
