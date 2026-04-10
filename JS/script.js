@@ -23,211 +23,283 @@ const pendingTasks = document.getElementById("pendingTasks");
 const progressTasks = document.getElementById("progress");
 
 //Botones de ordenamiento
-const sortAZ = document.getElementById("sortAZ");
-const sortZA = document.getElementById("sortZA");
-
-/* ===============================
-   2. ESCUCHAR EVENTO DEL BOTÓN
-   =============================== */
-//Boton AZ
 sortAZ.addEventListener("click", function() {
-   console.log("Boton AZ pressed")
-   const tasks = Array.from( document.querySelectorAll(".task-item") );
 
-   tasks.sort(function(a,b) {
-      const textA = a.querySelector("span").textContent.toLowerCase();
-      const textB = b.querySelector("span").textContent.toLowerCase();
-      
-      return textA.localeCompare(textB);
+   tasks.sort((a, b) => {
+      return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
    });
 
-   taskList.innerHTML = "";
-
-   tasks.forEach(function(task) {
-      taskList.appendChild(task);
-   });
-
+   renderTask();
 });
 
 sortZA.addEventListener("click", function() {
-   const tasks = Array.from( document.querySelectorAll(".task-item"));
 
-   tasks.sort(function(primerPalabra, segundaPalabra) {
-      const textA = primerPalabra.querySelector("span").textContent.toLowerCase();
-      const textB = segundaPalabra.querySelector("span").textContent.toLowerCase();
-
-      return textB.localeCompare(textA);
+   tasks.sort((a, b) => {
+      return b.text.toLowerCase().localeCompare(a.text.toLowerCase());
    });
 
-   taskList.innerHTML = "";
-
-   tasks.forEach(function(task){
-      taskList.appendChild(task);
-   });
+   renderTask();
 });
 
-/*
-addEventListener permite ejecutar código
-cuando ocurre una acción del usuario.
-*/
+let tasks = [];
 
-button.addEventListener("click", function() {
-    createTask();
-});
+/* ===============================
+   CREAR TAREA
+=============================== */
+function createTask() {
+   const taskText = input.value;
 
-input.addEventListener("keypress", function(tecla) {
-   if(tecla.key === "Enter") {
-      createTask();
-   }
-});
+   if (!validarTarea(taskText)) return;
 
-function updateStats() {
-   const tasks = document.querySelectorAll(".task-item");
-   const completed = document.querySelectorAll(".task-item.completed");
+   const newTask = {
+      text: taskText.trim(),
+      completed: false,
+      date: new Date().toLocaleString()
+   };
 
-   const total = tasks.length;
-   const done = completed.length;
+   tasks.push(newTask);
+   input.value = "";
 
-   totalTasks.textContent = total;
-   completedTasks.textContent = done;
-   pendingTasks.textContent = total - done;
+   savetask();
+   renderTask();
 
-   let porcentaje = 0;
-   if(total > 0) {
-      const resultado = (done / total) * 100
-      porcentaje = Math.round(resultado);
-   }
-
-   progressTasks.textContent = porcentaje + "%"
 }
 
 function createTask() {
-   //Guardamos el texto que escribio el usuario
-    const taskText = input.value;
-    console.log(taskText);
+   const taskText = input.value.trim();
 
-    if (taskText === "" ) return;
+   if (!validarTarea(taskText)) return;
 
-    //Crear elemento de tarea
-    const taskItem = document.createElement("div");
-    taskItem.classList.add("task-item");
+   // 🚫 Evitar duplicados
+   const existe = tasks.some(t => t.text.toLowerCase() === taskText.toLowerCase());
 
-    const taskLeft = document.createElement("div");
-    taskLeft.classList.add("task-left");
+   if (existe) {
+      alert("Esta tarea ya existe");
+      return;
+   }
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
+   const newTask = {
+      text: taskText,
+      completed: false,
+      date: new Date().toLocaleString()
+   };
 
-    const span = document.createElement("span");
-    span.textContent = taskText;
+   tasks.push(newTask);
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Eliminar";
-    deleteButton.classList.add("delete-btn");
+   input.value = "";
 
-    deleteButton.addEventListener("click", function() {
-      taskItem.remove();
-      updateStats();
-    });
-
-    deleteButton.addEventListener("click", function(){
-        const confirmar = confirm("¿Seguro que quieres eliminar esta tarea?");
-
-        if(confirmar) {
-            taskItem.remove();
-            updateStats();
-        }
-    });
-
-    checkbox.addEventListener("change", function() {
-      taskItem.classList.toggle("completed")
-
-      if(checkbox.checked) {
-         taskList.appendChild(taskItem); 
-      } else {
-         taskList.prepend(taskItem);
-      }
-      updateStats();
-    })
-
-    //Estructura HTML de cada tarea
-    taskLeft.appendChild(checkbox);
-    taskLeft.appendChild(span);
-
-    taskItem.appendChild(taskLeft);
-    taskItem.appendChild(deleteButton);
-
-    //Insertar el texto dentro del elemento
-    //taskItem.textContent = taskText;
-
-    //Agregar la tarea al Dashboard
-    taskList.appendChild(taskItem)
-
-    //Limpiar input
-    input.value = "";
-
-    updateStats();
+   savetask();
+   renderTask();
 }
 
-//Boton para completar todas las tareas
-//Validacion de tareas 
+/* ===============================
+   RENDERIZAR TAREAS
+=============================== */
+function renderTask() {
+   taskList.innerHTML = "";
+
+   tasks.forEach((task, index) => {
+
+      const taskItem = document.createElement("div");
+      taskItem.classList.add("task-item");
+
+      const taskLeft = document.createElement("div");
+      taskLeft.classList.add("task-left");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = task.completed;
+
+      const span = document.createElement("span");
+      span.textContent = task.text;
+
+      const fecha = document.createElement("small");
+      fecha.textContent = ` (${task.date})`;
+      fecha.style.color = "gray";
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Eliminar";
+
+      // ✅ Eliminar correctamente
+      deleteButton.addEventListener("click", () => {
+         if (confirm("¿Seguro que quieres eliminar esta tarea?")) {
+            tasks.splice(index, 1);
+            savetask();
+            renderTask();
+         }
+      });
+
+      // ✅ Marcar completado
+      checkbox.addEventListener("change", () => {
+         tasks[index].completed = checkbox.checked;
+         savetask();
+         renderTask();
+      });
+
+      taskLeft.appendChild(checkbox);
+      taskLeft.appendChild(span);
+      taskLeft.appendChild(fecha);
+
+      taskItem.appendChild(taskLeft);
+      taskItem.appendChild(deleteButton);
+
+      taskList.appendChild(taskItem);
+   });
+
+   updateStats();
+}
+
+/* ===============================
+   ESTADÍSTICAS
+=============================== */
+function getstats() {
+   const total = tasks.length;
+   const done = tasks.filter(t => t.completed).length;
+
+   return {
+      total,
+      done,
+      pending: total - done,
+      porcentaje: total > 0 ? Math.round((done / total) * 100) : 0
+   };
+}
+
+function updateStats() {
+   const stats = getstats();
+
+   totalTasks.textContent = stats.total;
+   completedTasks.textContent = stats.done;
+   pendingTasks.textContent = stats.pending;
+   progressTasks.textContent = stats.porcentaje + "%";
+}
+
+function updateStats() {
+   const stats = getstats();
+
+   totalTasks.textContent = stats.total;
+   completedTasks.textContent = stats.done;
+   pendingTasks.textContent = stats.pending;
+   progressTasks.textContent = stats.porcentaje + "%";
+
+   // 🎨 CAMBIO DE COLOR
+   if (stats.porcentaje < 50) {
+      progressTasks.style.color = "red";
+   } else {
+      progressTasks.style.color = "green";
+   }
+}
+
+/* ===============================
+   VALIDACIÓN
+=============================== */
 function validarTarea(texto) {
-  // Elimina espacios al inicio y al final
   let limpio = texto.trim();
 
   if (limpio.length < 5) {
-    alert("El texto de la tarea es demasiado corto. Debe tener mínimo 5 caracteres.");
+    alert("La tarea debe tener mínimo 5 caracteres");
     return false;
-  } else {
-    return true;
   }
+
+  if (limpio.length > 50) {
+    alert("La tarea no puede tener más de 50 caracteres");
+    return false;
+  }
+
+  return true;
 }
 
-// Ejemplo de uso
-validarTarea("  Hola "); // Mostrará alerta porque "Hola" tiene solo 4 caracteres
-validarTarea("  Hola mundo "); // Pasará la validación
-
-//Alerta de eliminacion
-function eliminarTarea(id) {
-  // Preguntar al usuario si está seguro
-  let seguro = confirm("¿Estás seguro de que deseas eliminar esta tarea?");
-
-  if (seguro) {
-    // Aquí iría la lógica para eliminar la tarea
-    console.log("Tarea eliminada con ID:", id);
-  } else {
-    // Si el usuario cancela, no se elimina
-    console.log("Eliminación cancelada");
-  }
+/* ===============================
+   LOCAL STORAGE
+=============================== */
+function savetask() {
+   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// Ejemplo de uso
-eliminarTarea(1);
+function loadTask() {
+   const save = localStorage.getItem("tasks");
+   if (save) {
+      tasks = JSON.parse(save);
+      renderTask();
+   }
+}
 
-//Agregar fecha de creacion
-function crearTarea(texto) {
+/* ===============================
+   EVENTOS
+=============================== */
+button.addEventListener("click", createTask);
+
+input.addEventListener("keypress", function(e) {
+   if (e.key === "Enter") createTask();
+});
+
+/* ===============================
+   INICIO
+=============================== */
+loadTask();
+
+function validarTarea(texto) {
   let limpio = texto.trim();
 
   if (limpio.length < 5) {
-    alert("El texto de la tarea es demasiado corto. Debe tener mínimo 5 caracteres.");
-    return null;
+    alert("La tarea debe tener mínimo 5 caracteres");
+    return false;
   }
 
-  // Crear objeto Date con la fecha actual
-  let fechaCreacion = new Date();
+  if (limpio.length > 50) {
+    alert("La tarea no puede tener más de 50 caracteres");
+    return false;
+  }
 
-  // Guardar tarea con texto y fecha
-  let tarea = {
-    texto: limpio,
-    fecha: fechaCreacion.toLocaleString() // formato legible
-  };
-
-  console.log("Tarea creada:", tarea);
-  return tarea;
+  return true;
 }
 
-// Ejemplo de uso
-crearTarea("Estudiar JavaScript");
+// BOTONES
+const deleteAllBtn = document.getElementById("deleteAll");
+const markAllBtn = document.getElementById("markAll");
+const unmarkAllBtn = document.getElementById("unmarkAll");
+
+// 🧹 BORRAR TODAS
+deleteAllBtn.addEventListener("click", () => {
+   if (tasks.length === 0) {
+      alert("No hay tareas para eliminar");
+      return;
+   }
+
+   const confirmar = confirm("¿Seguro que quieres eliminar TODAS las tareas?");
+   
+   if (confirmar) {
+      tasks = [];
+      savetask();
+      renderTask();
+   }
+});
+
+// ✅ MARCAR TODAS
+markAllBtn.addEventListener("click", () => {
+   if (tasks.length === 0) {
+      alert("No hay tareas");
+      return;
+   }
+
+   tasks.forEach(t => t.completed = true);
+
+   savetask();
+   renderTask();
+});
+
+// ❌ DESMARCAR TODAS
+unmarkAllBtn.addEventListener("click", () => {
+   if (tasks.length === 0) {
+      alert("No hay tareas");
+      return;
+   }
+
+   tasks.forEach(t => t.completed = false);
+
+   savetask();
+   renderTask();
+});
+
 
 
 

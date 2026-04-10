@@ -12,107 +12,37 @@
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-}
-
-.header {
-    background: var(--primary);
-    color: var(--white);
-    padding: 24px;
-    text-align: center;
-}
-
-.container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 0 var(--spacing);
-}
-
-.task-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 24px;
-}
-
-.task-form input {
-    flex: 1;
-    padding: 10px;
-    border-radius: var(--radius);
-    border: 1px solid #0b0fe9;
-    font-size: 1rem;
-}
-
-.task-form input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-button {
-    background: var(--primary);
-    color: var(--white);
-    border: none;
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-button:hover {
-    background: var(--primary-hover);
-}
-
-.task-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px;
-    background: var(--white);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.task-item span {
-    font-size: 0.95rem;
-}
-
-.task-item:hover .delete-btn{
-    display: block;
-}
-
-.completed span {
-    text-decoration: line-through;
-    opacity: 0.6;
-}
-
-.task-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.delete-btn {
-    background: #4f46e5;
-    display: none;
-}
-.delete-btn:hover {
-    background: #1f2937;
-}
-
-.task-stats {
-    display: flex;
-    justify-content: space-between;
-    background: white;
-    padding: 12px;
-    border-radius: var(--radius);
-    margin-bottom: 20px;
-}
-
-.task-sort{
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+ body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #0b1c2c;
+            color: #ffffff;
+        }
+        header {
+            background-color: #132f4c;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #0f253a;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        section {
+            padding: 20px;
+            border-bottom: 1px solid #1e3a5f;
+        }
+        h2 {
+            color: #4fc3f7;
+        }
+        footer {
+            background-color: #132f4c;
+            text-align: center;
+            padding: 10px;
+        }
