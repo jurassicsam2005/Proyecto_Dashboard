@@ -1,45 +1,21 @@
 /* ===============================
    1. SELECCIONAR ELEMENTOS DEL DOM
    =============================== */
-
-/*
-JavaScript primero debe localizar los elementos
-con los que va a trabajar dentro de la página.
-*/
-
-// Campo donde el usuario escribe la tarea
 const input = document.getElementById("taskInput");
-
-// Botón para agregar tarea
 const button = document.getElementById("addTaskBtn");
-
-// Contenedor donde aparecerán las tareas
 const taskList = document.getElementById("taskList");
 
-//Elementos de total de tareas
 const totalTasks = document.getElementById("totalTasks");
 const completedTasks = document.getElementById("completedTasks");
 const pendingTasks = document.getElementById("pendingTasks");
 const progressTasks = document.getElementById("progress");
 
-//Botones de ordenamiento
-sortAZ.addEventListener("click", function() {
-
-   tasks.sort((a, b) => {
-      return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
-   });
-
-   renderTask();
-});
-
-sortZA.addEventListener("click", function() {
-
-   tasks.sort((a, b) => {
-      return b.text.toLowerCase().localeCompare(a.text.toLowerCase());
-   });
-
-   renderTask();
-});
+// Botones
+const sortAZ = document.getElementById("sortAZ");
+const sortZA = document.getElementById("sortZA");
+const deleteAllBtn = document.getElementById("deleteAll");
+const markAllBtn = document.getElementById("markAll");
+const unmarkAllBtn = document.getElementById("unmarkAll");
 
 let tasks = [];
 
@@ -47,32 +23,12 @@ let tasks = [];
    CREAR TAREA
 =============================== */
 function createTask() {
-   const taskText = input.value;
-
-   if (!validarTarea(taskText)) return;
-
-   const newTask = {
-      text: taskText.trim(),
-      completed: false,
-      date: new Date().toLocaleString()
-   };
-
-   tasks.push(newTask);
-   input.value = "";
-
-   savetask();
-   renderTask();
-
-}
-
-function createTask() {
    const taskText = input.value.trim();
 
    if (!validarTarea(taskText)) return;
 
    // 🚫 Evitar duplicados
    const existe = tasks.some(t => t.text.toLowerCase() === taskText.toLowerCase());
-
    if (existe) {
       alert("Esta tarea ya existe");
       return;
@@ -85,7 +41,6 @@ function createTask() {
    };
 
    tasks.push(newTask);
-
    input.value = "";
 
    savetask();
@@ -99,7 +54,6 @@ function renderTask() {
    taskList.innerHTML = "";
 
    tasks.forEach((task, index) => {
-
       const taskItem = document.createElement("div");
       taskItem.classList.add("task-item");
 
@@ -171,41 +125,28 @@ function updateStats() {
    completedTasks.textContent = stats.done;
    pendingTasks.textContent = stats.pending;
    progressTasks.textContent = stats.porcentaje + "%";
-}
-
-function updateStats() {
-   const stats = getstats();
-
-   totalTasks.textContent = stats.total;
-   completedTasks.textContent = stats.done;
-   pendingTasks.textContent = stats.pending;
-   progressTasks.textContent = stats.porcentaje + "%";
 
    // 🎨 CAMBIO DE COLOR
-   if (stats.porcentaje < 50) {
-      progressTasks.style.color = "red";
-   } else {
-      progressTasks.style.color = "green";
-   }
+   progressTasks.style.color = stats.porcentaje < 50 ? "red" : "green";
 }
 
 /* ===============================
    VALIDACIÓN
 =============================== */
 function validarTarea(texto) {
-  let limpio = texto.trim();
+   let limpio = texto.trim();
 
-  if (limpio.length < 5) {
-    alert("La tarea debe tener mínimo 5 caracteres");
-    return false;
-  }
+   if (limpio.length < 5) {
+      alert("La tarea debe tener mínimo 5 caracteres");
+      return false;
+   }
 
-  if (limpio.length > 50) {
-    alert("La tarea no puede tener más de 50 caracteres");
-    return false;
-  }
+   if (limpio.length > 50) {
+      alert("La tarea no puede tener más de 50 caracteres");
+      return false;
+   }
 
-  return true;
+   return true;
 }
 
 /* ===============================
@@ -232,49 +173,31 @@ input.addEventListener("keypress", function(e) {
    if (e.key === "Enter") createTask();
 });
 
-/* ===============================
-   INICIO
-=============================== */
-loadTask();
+sortAZ.addEventListener("click", function() {
+   tasks.sort((a, b) => a.text.toLowerCase().localeCompare(b.text.toLowerCase()));
+   renderTask();
+});
 
-function validarTarea(texto) {
-  let limpio = texto.trim();
+sortZA.addEventListener("click", function() {
+   tasks.sort((a, b) => b.text.toLowerCase().localeCompare(a.text.toLowerCase()));
+   renderTask();
+});
 
-  if (limpio.length < 5) {
-    alert("La tarea debe tener mínimo 5 caracteres");
-    return false;
-  }
-
-  if (limpio.length > 50) {
-    alert("La tarea no puede tener más de 50 caracteres");
-    return false;
-  }
-
-  return true;
-}
-
-// BOTONES
-const deleteAllBtn = document.getElementById("deleteAll");
-const markAllBtn = document.getElementById("markAll");
-const unmarkAllBtn = document.getElementById("unmarkAll");
-
-// 🧹 BORRAR TODAS
+//  BORRAR TODAS
 deleteAllBtn.addEventListener("click", () => {
    if (tasks.length === 0) {
       alert("No hay tareas para eliminar");
       return;
    }
 
-   const confirmar = confirm("¿Seguro que quieres eliminar TODAS las tareas?");
-   
-   if (confirmar) {
+   if (confirm("¿Seguro que quieres eliminar TODAS las tareas?")) {
       tasks = [];
       savetask();
       renderTask();
    }
 });
 
-// ✅ MARCAR TODAS
+//  MARCAR TODAS
 markAllBtn.addEventListener("click", () => {
    if (tasks.length === 0) {
       alert("No hay tareas");
@@ -282,12 +205,11 @@ markAllBtn.addEventListener("click", () => {
    }
 
    tasks.forEach(t => t.completed = true);
-
    savetask();
    renderTask();
 });
 
-// ❌ DESMARCAR TODAS
+//  DESMARCAR TODAS
 unmarkAllBtn.addEventListener("click", () => {
    if (tasks.length === 0) {
       alert("No hay tareas");
@@ -295,10 +217,16 @@ unmarkAllBtn.addEventListener("click", () => {
    }
 
    tasks.forEach(t => t.completed = false);
-
    savetask();
    renderTask();
 });
+
+/* ===============================
+   INICIO
+=============================== */
+loadTask();
+
+
 
 
 

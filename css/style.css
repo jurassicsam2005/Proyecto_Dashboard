@@ -1,48 +1,145 @@
-:root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --bg: #171af1;
-    --text: #1f2937;
-    --white: #ffffff;
-    --radius: 8px;
-    --spacing: 16px;
+/* ===============================
+   ESTILO GENERAL
+=============================== */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f6ff; /* azul muy claro de fondo */
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
-* {
-    box-sizing: border-box;
+/* ===============================
+   HEADER
+=============================== */
+.header {
+    background-color: #1e3a8a; /* azul oscuro */
+    color: white;
+    text-align: center;
+    padding: 20px;
 }
 
- body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #0b1c2c;
-            color: #ffffff;
-        }
-        header {
-            background-color: #132f4c;
-            padding: 20px;
-            text-align: center;
-        }
-        nav {
-            background-color: #0f253a;
-            padding: 10px;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            margin: 10px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        section {
-            padding: 20px;
-            border-bottom: 1px solid #1e3a5f;
-        }
-        h2 {
-            color: #4fc3f7;
-        }
-        footer {
-            background-color: #132f4c;
-            text-align: center;
-            padding: 10px;
-        }
+/* ===============================
+   CONTENEDOR PRINCIPAL
+=============================== */
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: rgb(31, 45, 245);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ===============================
+   FORMULARIO DE TAREAS
+=============================== */
+.task-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.task-form input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #3b82f6; /* azul medio */
+    border-radius: 5px;
+    outline: none;
+}
+
+.task-form input:focus {
+    border-color: #1e40af; /* azul más intenso */
+}
+
+.task-form button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.task-form button:hover {
+    background-color: #1e40af;
+}
+
+/* ===============================
+   ESTADÍSTICAS
+=============================== */
+.task-stats {
+    background: #e0f2fe; /* azul muy suave */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.task-stats p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+/* ===============================
+   BOTONES DE ORDENAMIENTO Y ACCIONES
+=============================== */
+.task-sort, .task-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.task-sort button, .task-actions button {
+    flex: 1;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.task-sort button:hover, .task-actions button:hover {
+    background-color: #1e3a8a;
+}
+
+/* ===============================
+   LISTA DE TAREAS
+=============================== */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f0f9ff;
+    padding: 10px;
+    border: 1px solid #93c5fd;
+    border-radius: 5px;
+}
+
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-item button {
+    background-color: #ef4444; /* rojo para eliminar */
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.task-item button:hover {
+    background-color: #b91c1c;
+}
