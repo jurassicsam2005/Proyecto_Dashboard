@@ -1,233 +1,303 @@
 /* ===============================
    1. SELECCIONAR ELEMENTOS DEL DOM
    =============================== */
-
-/*
-JavaScript primero debe localizar los elementos
-con los que va a trabajar dentro de la página.
-*/
-
-// Campo donde el usuario escribe la tarea
 const input = document.getElementById("taskInput");
-
-// Botón para agregar tarea
+const category = document.getElementById("taskCategory");
 const button = document.getElementById("addTaskBtn");
-
-// Contenedor donde aparecerán las tareas
 const taskList = document.getElementById("taskList");
+const toggleBtn = document.getElementById("toggleDarkMode");
 
-//Elementos de total de tareas
 const totalTasks = document.getElementById("totalTasks");
 const completedTasks = document.getElementById("completedTasks");
 const pendingTasks = document.getElementById("pendingTasks");
 const progressTasks = document.getElementById("progress");
 
-//Botones de ordenamiento
+// Botones
 const sortAZ = document.getElementById("sortAZ");
 const sortZA = document.getElementById("sortZA");
+const deleteAllBtn = document.getElementById("deleteAll");
+const markAllBtn = document.getElementById("markAll");
+const unmarkAllBtn = document.getElementById("unmarkAll");
+
+let tasks = [];
 
 /* ===============================
-   2. ESCUCHAR EVENTO DEL BOTÓN
-   =============================== */
-//Boton AZ
-sortAZ.addEventListener("click", function() {
-   console.log("Boton AZ pressed")
-   const tasks = Array.from( document.querySelectorAll(".task-item") );
+   CREAR TAREA
+=============================== */
+function createTask() {
+   const taskText = input.value.trim();
 
-   tasks.sort(function(a,b) {
-      const textA = a.querySelector("span").textContent.toLowerCase();
-      const textB = b.querySelector("span").textContent.toLowerCase();
-      
-      return textA.localeCompare(textB);
-   });
+   if (!validarTarea(taskText)) return;
 
+   const existe = tasks.some(t => t.text.toLowerCase() === taskText.toLowerCase());
+   if (existe) {
+      alert("Esta tarea ya existe");
+      return;
+   } 
+
+   const newTask = {
+   text: taskText,
+   category: category.value, // ✅ NUEVO
+   priority: document.getElementById("taskPriority").value, // ✅ NUEVO
+   completed: false,
+   date: new Date().toLocaleString()
+};
+
+   tasks.push(newTask); // ✅ AGREGAR AL ARRAY
+   savetask();
+   renderTask();
+
+   input.value = ""; // limpiar input
+}
+
+
+/* ===============================
+   RENDERIZAR TAREAS
+=============================== */
+function renderTask() {
    taskList.innerHTML = "";
 
-   tasks.forEach(function(task) {
-      taskList.appendChild(task);
+   tasks.forEach((task, index) => {
+      const taskItem = document.createElement("div");
+      taskItem.classList.add("task-item");
+
+      const taskLeft = document.createElement("div");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = task.completed;
+
+      const span = document.createElement("span");
+      span.textContent = task.text;
+
+      const categoria = document.createElement("small");
+      categoria.textContent = ` [${task.category}]`;
+
+      const fecha = document.createElement("small");
+      fecha.textContent = ` (${task.date})`;
+
+      const prioridad = document.createElement("small");
+      prioridad.textContent = ` (${task.priority})`;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Eliminar";
+
+      const editButton = document.createElement("button");
+      editButton.textContent = "Editar";
+
+      // ✅ COMPLETADO
+      if (task.completed) {
+         taskItem.classList.add("completed");
+      }
+
+      checkbox.addEventListener("change", () => {
+         tasks[index].completed = checkbox.checked;
+         savetask();
+         renderTask();
+      });
+
+      // ✅ ELIMINAR
+      deleteButton.addEventListener("click", () => {
+         if (confirm("¿Seguro que quieres eliminar esta tarea?")) {
+            tasks.splice(index, 1);
+            savetask();
+            renderTask();
+         }
+      });
+
+      // ✅ EDITAR
+      editButton.addEventListener("click", () => {
+         const inputEdit = document.createElement("input");
+         inputEdit.type = "text";
+         inputEdit.value = task.text;
+
+         taskLeft.replaceChild(inputEdit, span);
+         inputEdit.focus();
+
+         inputEdit.addEventListener("blur", () => {
+            const nuevoTexto = inputEdit.value.trim();
+
+            if (validarTarea(nuevoTexto)) {
+               tasks[index].text = nuevoTexto;
+               savetask();
+            }
+
+            renderTask();
+         });
+      });
+
+      taskLeft.appendChild(checkbox);
+      taskLeft.appendChild(span);
+      taskLeft.appendChild(categoria);
+      taskLeft.appendChild(prioridad);
+      taskLeft.appendChild(fecha);
+
+      taskItem.appendChild(taskLeft);
+      taskItem.appendChild(editButton);   // ✅ AÑADIDO
+      taskItem.appendChild(deleteButton);
+
+      if (task.priority === "Alta") {
+        taskItem.style.borderLeft = "5px solid red";
+      } else if (task.priority === "Media") {
+         taskItem.style.borderLeft = "5px solid orange";
+      } else {
+         taskItem.style.borderLeft = "5px solid green";
+      }
+
+      taskList.appendChild(taskItem);
    });
 
+   updateStats();
+}
+
+/* ===============================
+   ESTADÍSTICAS
+=============================== */
+function getstats() {
+   const total = tasks.length;
+   const done = tasks.filter(t => t.completed).length;
+
+   return {
+      total,
+      done,
+      pending: total - done,
+      porcentaje: total > 0 ? Math.round((done / total) * 100) : 0
+   };
+}
+
+function updateStats() {
+   const stats = getstats();
+
+   totalTasks.textContent = stats.total;
+   completedTasks.textContent = stats.done;
+   pendingTasks.textContent = stats.pending;
+   progressTasks.textContent = stats.porcentaje + "%";
+
+   // 🎨 CAMBIO DE COLOR
+   progressTasks.style.color = stats.porcentaje < 50 ? "red" : "green";
+}
+
+/* ===============================
+   VALIDACIÓN
+=============================== */
+function validarTarea(texto) {
+   let limpio = texto.trim();
+
+   if (limpio.length < 5) {
+      alert("La tarea debe tener mínimo 5 caracteres");
+      return false;
+   }
+
+   if (limpio.length > 50) {
+      alert("La tarea no puede tener más de 50 caracteres");
+      return false;
+   }
+
+   return true;
+}
+
+/* ===============================
+   LOCAL STORAGE
+=============================== */
+function savetask() {
+   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTask() {
+   const save = localStorage.getItem("tasks");
+   if (save) {
+      tasks = JSON.parse(save);
+      renderTask();
+   }
+}
+
+/* ===============================
+   EVENTOS
+=============================== */
+button.addEventListener("click", createTask);
+
+input.addEventListener("keypress", function(e) {
+   if (e.key === "Enter") createTask();
+});
+
+sortAZ.addEventListener("click", function() {
+   tasks.sort((a, b) => a.text.toLowerCase().localeCompare(b.text.toLowerCase()));
+   renderTask();
 });
 
 sortZA.addEventListener("click", function() {
-   const tasks = Array.from( document.querySelectorAll(".task-item"));
-
-   tasks.sort(function(primerPalabra, segundaPalabra) {
-      const textA = primerPalabra.querySelector("span").textContent.toLowerCase();
-      const textB = segundaPalabra.querySelector("span").textContent.toLowerCase();
-
-      return textB.localeCompare(textA);
-   });
-
-   taskList.innerHTML = "";
-
-   tasks.forEach(function(task){
-      taskList.appendChild(task);
-   });
+   tasks.sort((a, b) => b.text.toLowerCase().localeCompare(a.text.toLowerCase()));
+   renderTask();
 });
 
-/*
-addEventListener permite ejecutar código
-cuando ocurre una acción del usuario.
-*/
+//  BORRAR TODAS
+deleteAllBtn.addEventListener("click", () => {
+   if (tasks.length === 0) {
+      alert("No hay tareas para eliminar");
+      return;
+   }
 
-button.addEventListener("click", function() {
-    createTask();
-});
-
-input.addEventListener("keypress", function(tecla) {
-   if(tecla.key === "Enter") {
-      createTask();
+   if (confirm("¿Seguro que quieres eliminar TODAS las tareas?")) {
+      tasks = [];
+      savetask();
+      renderTask();
    }
 });
 
-function updateStats() {
-   const tasks = document.querySelectorAll(".task-item");
-   const completed = document.querySelectorAll(".task-item.completed");
-
-   const total = tasks.length;
-   const done = completed.length;
-
-   totalTasks.textContent = total;
-   completedTasks.textContent = done;
-   pendingTasks.textContent = total - done;
-
-   let porcentaje = 0;
-   if(total > 0) {
-      const resultado = (done / total) * 100
-      porcentaje = Math.round(resultado);
+//  MARCAR TODAS
+markAllBtn.addEventListener("click", () => {
+   if (tasks.length === 0) {
+      alert("No hay tareas");
+      return;
    }
 
-   progressTasks.textContent = porcentaje + "%"
-}
+   tasks.forEach(t => t.completed = true);
+   savetask();
+   renderTask();
+});
 
-function createTask() {
-   //Guardamos el texto que escribio el usuario
-    const taskText = input.value;
-    console.log(taskText);
+//  DESMARCAR TODAS
+unmarkAllBtn.addEventListener("click", () => {
+   if (tasks.length === 0) {
+      alert("No hay tareas");
+      return;
+   }
 
-    if (taskText === "" ) return;
+   tasks.forEach(t => t.completed = false);
+   savetask();
+   renderTask();
+});
 
-    //Crear elemento de tarea
-    const taskItem = document.createElement("div");
-    taskItem.classList.add("task-item");
+toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
 
-    const taskLeft = document.createElement("div");
-    taskLeft.classList.add("task-left");
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("modo", "oscuro");
+    } else {
+        localStorage.setItem("modo", "claro");
+    }
+});
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
+window.addEventListener("load", () => {
+    const modoGuardado = localStorage.getItem("modo");
 
-    const span = document.createElement("span");
-    span.textContent = taskText;
+    if (modoGuardado === "oscuro") {
+        document.body.classList.add("dark-mode");
+    }
+});
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Eliminar";
-    deleteButton.classList.add("delete-btn");
+/* ===============================
+   INICIO
+=============================== */
+loadTask();
 
-    deleteButton.addEventListener("click", function() {
-      taskItem.remove();
-      updateStats();
-    });
 
-    deleteButton.addEventListener("click", function(){
-        const confirmar = confirm("¿Seguro que quieres eliminar esta tarea?");
 
-        if(confirmar) {
-            taskItem.remove();
-            updateStats();
-        }
-    });
 
-    checkbox.addEventListener("change", function() {
-      taskItem.classList.toggle("completed")
 
-      if(checkbox.checked) {
-         taskList.appendChild(taskItem); 
-      } else {
-         taskList.prepend(taskItem);
-      }
-      updateStats();
-    })
 
-    //Estructura HTML de cada tarea
-    taskLeft.appendChild(checkbox);
-    taskLeft.appendChild(span);
 
-    taskItem.appendChild(taskLeft);
-    taskItem.appendChild(deleteButton);
 
-    //Insertar el texto dentro del elemento
-    //taskItem.textContent = taskText;
-
-    //Agregar la tarea al Dashboard
-    taskList.appendChild(taskItem)
-
-    //Limpiar input
-    input.value = "";
-
-    updateStats();
-}
-
-//Boton para completar todas las tareas
-//Validacion de tareas 
-function validarTarea(texto) {
-  // Elimina espacios al inicio y al final
-  let limpio = texto.trim();
-
-  if (limpio.length < 5) {
-    alert("El texto de la tarea es demasiado corto. Debe tener mínimo 5 caracteres.");
-    return false;
-  } else {
-    return true;
-  }
-}
-
-// Ejemplo de uso
-validarTarea("  Hola "); // Mostrará alerta porque "Hola" tiene solo 4 caracteres
-validarTarea("  Hola mundo "); // Pasará la validación
-
-//Alerta de eliminacion
-function eliminarTarea(id) {
-  // Preguntar al usuario si está seguro
-  let seguro = confirm("¿Estás seguro de que deseas eliminar esta tarea?");
-
-  if (seguro) {
-    // Aquí iría la lógica para eliminar la tarea
-    console.log("Tarea eliminada con ID:", id);
-  } else {
-    // Si el usuario cancela, no se elimina
-    console.log("Eliminación cancelada");
-  }
-}
-
-// Ejemplo de uso
-eliminarTarea(1);
-
-//Agregar fecha de creacion
-function crearTarea(texto) {
-  let limpio = texto.trim();
-
-  if (limpio.length < 5) {
-    alert("El texto de la tarea es demasiado corto. Debe tener mínimo 5 caracteres.");
-    return null;
-  }
-
-  // Crear objeto Date con la fecha actual
-  let fechaCreacion = new Date();
-
-  // Guardar tarea con texto y fecha
-  let tarea = {
-    texto: limpio,
-    fecha: fechaCreacion.toLocaleString() // formato legible
-  };
-
-  console.log("Tarea creada:", tarea);
-  return tarea;
-}
-
-// Ejemplo de uso
-crearTarea("Estudiar JavaScript");
 
 
 

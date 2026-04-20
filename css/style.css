@@ -1,92 +1,127 @@
-:root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --bg: #171af1;
-    --text: #1f2937;
-    --white: #ffffff;
-    --radius: 8px;
-    --spacing: 16px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
+/* ===============================
+   ESTILO GENERAL
+=============================== */
 body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f6ff; /* azul muy claro de fondo */
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
+    padding: 0;
+    color: #333;
 }
 
+/* ===============================
+   HEADER
+=============================== */
 .header {
-    background: var(--primary);
-    color: var(--white);
-    padding: 24px;
+    background-color: #1e3a8a; /* azul oscuro */
+    color: white;
     text-align: center;
+    padding: 20px;
 }
 
+/* ===============================
+   CONTENEDOR PRINCIPAL
+=============================== */
 .container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 0 var(--spacing);
+    max-width: 800px;
+    margin: 30px auto;
+    background: rgb(31, 45, 245);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
 }
 
+/* ===============================
+   FORMULARIO DE TAREAS
+=============================== */
 .task-form {
     display: flex;
     gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .task-form input {
     flex: 1;
     padding: 10px;
-    border-radius: var(--radius);
-    border: 1px solid #0b0fe9;
-    font-size: 1rem;
+    border: 2px solid #3b82f6; /* azul medio */
+    border-radius: 5px;
+    outline: none;
 }
 
 .task-form input:focus {
-    outline: none;
-    border-color: var(--primary);
+    border-color: #1e40af; /* azul más intenso */
 }
 
-button {
-    background: var(--primary);
-    color: var(--white);
+.task-form button {
+    background-color: #3b82f6;
+    color: white;
     border: none;
-    padding: 10px 14px;
-    border-radius: var(--radius);
+    padding: 10px 15px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.3s;
 }
 
-button:hover {
-    background: var(--primary-hover);
+.task-form button:hover {
+    background-color: #1e40af;
+}
+
+/* ===============================
+   ESTADÍSTICAS
+=============================== */
+.task-stats {
+    background: #e0f2fe; /* azul muy suave */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.task-stats p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+/* ===============================
+   BOTONES DE ORDENAMIENTO Y ACCIONES
+=============================== */
+.task-sort, .task-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.task-sort button, .task-actions button {
+    flex: 1;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.task-sort button:hover, .task-actions button:hover {
+    background-color: #1e3a8a;
+}
+
+/* ===============================
+   LISTA DE TAREAS
+=============================== */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .task-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px;
-    background: var(--white);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.task-item span {
-    font-size: 0.95rem;
-}
-
-.task-item:hover .delete-btn{
-    display: block;
-}
-
-.completed span {
-    text-decoration: line-through;
-    opacity: 0.6;
+    background: #f0f9ff;
+    padding: 10px;
+    border: 1px solid #93c5fd;
+    border-radius: 5px;
 }
 
 .task-left {
@@ -94,25 +129,102 @@ button:hover {
     align-items: center;
     gap: 10px;
 }
-.delete-btn {
-    background: #4f46e5;
-    display: none;
-}
-.delete-btn:hover {
-    background: #1f2937;
+
+.task-item button {
+    background-color: #ef4444; /* rojo para eliminar */
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-.task-stats {
-    display: flex;
-    justify-content: space-between;
-    background: white;
-    padding: 12px;
-    border-radius: var(--radius);
-    margin-bottom: 20px;
+.task-item button:hover {
+    background-color: #b91c1c;
 }
 
-.task-sort{
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+/* Animacion para agregar tareas */
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animación para eliminar tareas */
+@keyframes fade-out {
+   from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(10px); }
+}
+
+/* MODO CLARO */
+body.light-mode {
+    background-color: #ffffff; /* fondo blanco para modo claro */
+    color: #333;
+}
+
+/* MODO OSCURO */
+body.dark-mode {
+    background-color: #1e1e1e; /* fondo oscuro */
+    color: #141414;
+}
+
+body.dark-mode .task {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+/* Botones */
+button {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+body.dark-mode button {
+    background-color: #2563eb;
+}
+
+
+/* CENTRAR GIF*/
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ANIMACION AL AGREGAR TAREAS */
+.task-item {
+    animation: fade-in 0.5s ease;
+}
+
+/*ANIMACION AL ELIMINAR TAREAS */
+.task-item.removing {
+    animation: fade-out 0.5s ease;
+}
+
+/* Caja de tareas en modo oscuro */
+body.dark-mode .task-item {
+  background-color: #504e4e;
+  border: 1px solid #fcf8f8;
+  text-shadow: white;
+}
+
+/* CONTADOR DE TAREAS MODO OSCURO */
+body.dark-mode .task-stats {
+    background: #504e4e;
+    border: 1px solid #fcf8f8;
+    color: white;
+}
+
+/* SELECTOR DE CATEGORIA MODO OSCURO */
+body.dark-mode select {
+    background-color: #504e4e;
+    color: white;
+    border: 1px solid #fcf8f8;
+}
+
+/* BARRA DE AGREGAR TAREA MODO OSCURO */
+body.dark-mode .task-form input {
+    background-color: #504e4e;
+    color: white;
+    border: 1px solid #fcf8f8;
 }
