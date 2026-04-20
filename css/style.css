@@ -143,3 +143,88 @@ body {
 .task-item button:hover {
     background-color: #b91c1c;
 }
+
+/* Animacion para agregar tareas */
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animación para eliminar tareas */
+@keyframes fade-out {
+   from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(10px); }
+}
+
+/* MODO CLARO */
+body.light-mode {
+    background-color: #ffffff; /* fondo blanco para modo claro */
+    color: #333;
+}
+
+/* MODO OSCURO */
+body.dark-mode {
+    background-color: #1e1e1e; /* fondo oscuro */
+    color: #141414;
+}
+
+body.dark-mode .task {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+/* Botones */
+button {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+body.dark-mode button {
+    background-color: #2563eb;
+}
+
+
+/* CENTRAR GIF*/
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ANIMACION AL AGREGAR TAREAS */
+.task-item {
+    animation: fade-in 0.5s ease;
+}
+
+/*ANIMACION AL ELIMINAR TAREAS */
+.task-item.removing {
+    animation: fade-out 0.5s ease;
+}
+
+/* Caja de tareas en modo oscuro */
+body.dark-mode .task-item {
+  background-color: #504e4e;
+  border: 1px solid #fcf8f8;
+  text-shadow: white;
+}
+
+/* CONTADOR DE TAREAS MODO OSCURO */
+body.dark-mode .task-stats {
+    background: #504e4e;
+    border: 1px solid #fcf8f8;
+    color: white;
+}
+
+/* SELECTOR DE CATEGORIA MODO OSCURO */
+body.dark-mode select {
+    background-color: #504e4e;
+    color: white;
+    border: 1px solid #fcf8f8;
+}
+
+/* BARRA DE AGREGAR TAREA MODO OSCURO */
+body.dark-mode .task-form input {
+    background-color: #504e4e;
+    color: white;
+    border: 1px solid #fcf8f8;
+}

@@ -11,13 +11,31 @@
         <img src="C:\Users\bsamu\OneDrive\PROGRAMACION WEB\Proyecto pagina web\GODZILLA\godzilla.png" alt="GODZILLA">
 </head>
     </header>
+    <img src="C:\Users\bsamu\OneDrive\Programacion por computadora\Actividad\gojira.gif" alt="Gojira" width="150" height="150">
+
 
     <main class="container">
 
         <section class="task-form">
-            <input id="taskInput" type="text" placeholder="Nueva tarea">
-            <button id="addTaskBtn">Agregar</button>
+         <input id="taskInput" type="text" placeholder="Nueva tarea">
+    
+          <!-- Selector de categoría -->
+          <select id="taskCategory">
+             <option value="Escuela">Escuela</option>
+             <option value="Trabajo">Trabajo</option>
+             <option value="Personal">Personal</option>
+            </select>
+
+            <select id="taskPriority">
+              <option value="Alta">Alta</option>
+              <option value="Media">Media</option>
+              <option value="Baja">Baja</option>
+            </select>
+
+          <button id="addTaskBtn">Agregar</button>
         </section>
+
+        <button id="toggleDarkMode">🌙 Modo oscuro</button>
 
         <!-- Contador de tareas -->
         <section class="task-stats">
